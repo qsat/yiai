@@ -7,5 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "BSD-2-Clause"
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "request": "~2.30.0",
+    "jsdom": "~0.8.10",
+    "mkdirp": "~0.3.5",
+    "underscore": "~1.5.2",
+    "colors": "~0.6.2",
+    "async": "~0.2.9"
+  }
 }
