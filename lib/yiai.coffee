@@ -21,8 +21,9 @@ class Yiai
   initConfig: (config)->
     {@filelist, @dest, @origin, @patterns} = config
 
-  process: () ->
+  process: (options) ->
     lines = @_lineBy(@filelist)
+    {dry} = options
 
     tasks = _.map lines, (path, index) =>
       (next) =>
@@ -37,7 +38,7 @@ class Yiai
             src: [jquery]
             done: (error, window) =>
               @check path, window, res
-              @replace path, window, res
+              @replace( path, window, res ) unless dry
               window.close()
               next(null, index)
 
@@ -55,7 +56,7 @@ class Yiai
     _.map ptn, (e, i) =>
       _.map @patterns[e].replace, (replace, target) ->
         $tar = $(target)
-        $tar.html replace $tar.html(), $, window
+        $tar.html replace $tar.html(), window
 
     str = window.document.innerHTML
 

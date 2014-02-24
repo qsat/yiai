@@ -4,13 +4,23 @@
 
 require('coffee-script/register');
 
-var Yiai = require('../lib/yiai'),
+var args = require('commander'),
+    Yiai = require('../lib/yiai'),
     yiai = new Yiai,
     cdir = process.cwd();
 
 process.chdir( cdir );
 
+args
+  .version('0.0.1')
+  .option("-d --dry", "dry run, only check process, no replace process")
+  .parse(process.argv)
+
 require( require("path").resolve(cdir, "./Yiaifile") )(yiai);
 
 
-yiai.process();
+if(args.dry) {
+  console.log("\n* * Dry run: check only * *\n");
+}
+
+yiai.process( args );
