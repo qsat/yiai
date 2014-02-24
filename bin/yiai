@@ -2,6 +2,8 @@
 
 'use strict';
 
+require('coffee-script/register');
+
 var Yiai = require('../lib/yiai'),
     yiai = new Yiai,
     cdir = process.cwd();
