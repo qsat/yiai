@@ -1,0 +1,7 @@
+/
+/report/
+/service/
+/portfolio/
+/press/
+/company/
+/recruit/

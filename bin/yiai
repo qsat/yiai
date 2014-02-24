@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var Yiai = require('../lib/yiai'),
+    yiai = new Yiai,
+    cdir = process.cwd();
+
+process.chdir( cdir );
+
+require( require("path").resolve(cdir, "./Yiaifile") )(yiai);
+
+
+yiai.process();
