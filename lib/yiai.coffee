@@ -37,8 +37,14 @@ class Yiai
             html: body
             src: [jquery]
             done: (error, window) =>
-              @check path, window, res
-              @replace( path, window, res ) unless dry
+              @list[path].check = matched = @check path, window, res
+
+              unless dry 
+                result = @replace matched, window, res
+                destpath = "#{@dest}#{path}"
+                @_mkdir destpath, "mkdir"
+                @_writeFile destpath, result, "write"
+
               window.close()
               next(null, index)
 
@@ -46,23 +52,16 @@ class Yiai
       console.log results, @list
 
   check: (path, window, res)->
-    @list[path].check = _.compact _.map @patterns, (e, i) ->
+    _.compact _.map @patterns, (e, i) ->
       i if _.every( _.map e.check, (f, j) -> f path, window, res )
 
-  replace: (path, window, res) ->
-    $ = window.$
-    ptn = @list[path].check
-
-    _.map ptn, (e, i) =>
+  replace: (matched, window, res) ->
+    _.map matched, (e, i) =>
       _.map @patterns[e].replace, (replace, target) ->
-        $tar = $(target)
+        $tar = window.$(target)
         $tar.html replace $tar.html(), window
 
-    str = window.document.innerHTML
-
-    destpath = "#{@dest}#{path}"
-    @_mkdir destpath, "mkdir"
-    @_writeFile destpath, str, "write"
+    window.document.innerHTML
 
   _lineBy: (filename, encoding="utf-8") ->
     str = fs.readFileSync filename, encoding
@@ -72,12 +71,15 @@ class Yiai
   _dirname: (p) ->
     if path.extname(p) isnt ''
       p = path.dirname p
-    return p
+    @_formatDirname p
+
+  _formatDirname: (p) ->
+    "#{p}/".replace /\/+/g, "/"
 
   _reqfile: (p) ->
-    if /\/$/.test p
-      p = "#{p}index.html"
-    return p
+    if path.extname(p) is ''
+      p = "#{@_formatDirname p}index.html"
+    p
 
   _mkdir: (path, cmd) ->
     mkdirp.sync @_dirname(path)
